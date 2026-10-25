@@ -155,18 +155,19 @@ vercel
 
 ### Environment Variables
 
-No environment variables are required for basic functionality. For production, you may want to add:
+No environment variables are required for basic functionality. See [.env.example](.env.example) for all variables.
 
-- Database connection strings
-- Email service API keys (for RSVP confirmations/newsletter)
-- Analytics tracking IDs
+### Newsletter
 
-Newsletter sign-up can integrate with Brevo using:
+The newsletter mailing list is self-hosted (see [GLOSSARY.md](GLOSSARY.md) and [docs/adr](docs/adr)). To enable it:
 
-- `BREVO_API_KEY`
-- `BREVO_LIST_ID`
+1. Create a Neon Postgres database in an EU region and run [db/migrations/0001_newsletter.sql](db/migrations/0001_newsletter.sql) against it. Set `DATABASE_URL`.
+2. Create a dedicated mailbox (e.g. `newsletter@sugnl.net`) and set the `SMTP_*` variables.
+3. Register a GitHub OAuth App with callback URL `https://<your-domain>/api/auth/callback/github`. Set `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` and the Admins' numeric GitHub IDs in `ADMIN_GITHUB_IDS`.
+4. Set `CRON_SECRET` so the daily cleanup job in [vercel.json](vercel.json) can run.
+5. Set `NEXT_PUBLIC_FEATURE_NEWSLETTER=true`.
 
-If Brevo env vars are not configured, the newsletter API will accept sign-ups without sending them to an external provider.
+Admins manage Subscribers at `/admin/newsletter`.
 
 ## Cost Optimization
 

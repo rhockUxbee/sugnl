@@ -10,6 +10,7 @@ const publicPaths = [
   "/dutch-mvps",
   "/events",
   "/organizers",
+  "/privacy",
   ...(featureFlags.newsletter ? ["/newsletter"] : []),
 ];
 

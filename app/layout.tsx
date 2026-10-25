@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
@@ -48,13 +49,21 @@ export default async function RootLayout({
         <footer className="mt-16 border-t border-[color:var(--nav-line)] bg-[color:var(--nav-bg)]">
           <div className="mx-auto max-w-6xl px-4 py-8 text-center text-sm text-[color:var(--nav-text-muted)]">
             <p>© {new Date().getFullYear()} SUGNL Community. All rights reserved.</p>
-            <button
-              type="button"
-              data-cc="show-preferencesModal"
-              className="mt-2 underline-offset-4 hover:text-[color:var(--nav-text)] hover:underline"
-            >
-              Cookie settings
-            </button>
+            <div className="mt-2 flex justify-center gap-4">
+              <Link
+                href="/privacy"
+                className="underline-offset-4 hover:text-[color:var(--nav-text)] hover:underline"
+              >
+                Privacy statement
+              </Link>
+              <button
+                type="button"
+                data-cc="show-preferencesModal"
+                className="underline-offset-4 hover:text-[color:var(--nav-text)] hover:underline"
+              >
+                Cookie settings
+              </button>
+            </div>
           </div>
         </footer>
       </body>

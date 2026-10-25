@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import PageIntro from "@/components/PageIntro";
+import { connection } from "next/server";
 import PageContainer from "@/components/PageContainer";
+import NewsletterEmailForm from "@/components/newsletter/NewsletterEmailForm";
+import NewsletterShowcase from "@/components/newsletter/NewsletterShowcase";
 import { featureFlags } from "@/lib/featureFlags";
 
 export const metadata: Metadata = {
@@ -9,31 +12,37 @@ export const metadata: Metadata = {
   description: "Subscribe to the SUGNL newsletter for event announcements and community updates.",
 };
 
-const brevoFormUrl =
-  "https://2c2f31e7.sibforms.com/v2/serve/MUIFAN2IxJ-u7HnPPmOPyutRVaNFkJSGKuxtfXAE8GevRNWU3nTkpRNYvfg97C1dpzy_9bve84YynmCH3xui7Xf00R7kTqtVvgE0Qz6e-I-2_7iYNcfwfIpLW7BUPXPTj9qA8fpK604eicasMYuFUSRKlFVMQWfWLFccZFa7H-X8BPX2y4afHYv4uEFGdDFOXPWCiLJnh9X6QF6hTQ==";
-
-export default function NewsletterPage() {
+export default async function NewsletterPage() {
   if (!featureFlags.newsletter) {
     notFound();
   }
 
-  return (
-    <PageContainer className="md:py-16">
-      <PageIntro title="Join our newsletter" />
+  // Render per request so the CSP nonce reaches the inline scripts that hydrate the form.
+  await connection();
 
-      <section className="surface-card overflow-hidden border-[color:var(--line)] bg-[color:var(--surface-soft)] p-4 md:p-8">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface)] p-3 shadow-sm md:p-5">
-          <iframe
-            src={brevoFormUrl}
-            frameBorder="0"
-            scrolling="auto"
-            allowFullScreen
-            title="Brevo newsletter sign-up"
-            className="block w-full rounded-xl"
-            style={{ height: "500px" }}
-          />
-        </div>
-      </section>
+  return (
+    <PageContainer className="py-8 md:py-12">
+      <NewsletterShowcase
+        title="Join the SUGNL"
+        highlight="newsletter"
+        description="Stay up to date on upcoming events, sessions and news from the Dutch Sitecore community. We only ask for your email address."
+        action={
+          <>
+            <NewsletterEmailForm
+              endpoint="/api/newsletter/subscribe"
+              submitLabel="Subscribe"
+              requireConsent
+              variant="showcase"
+            />
+            <p className="mt-4 text-sm text-[color:var(--muted)]">
+              We&apos;ll email you a link to confirm. Changed your mind?{" "}
+              <Link href="/newsletter/unsubscribe" className="text-[color:var(--link)] underline-offset-4 hover:underline">
+                Unsubscribe
+              </Link>
+            </p>
+          </>
+        }
+      />
     </PageContainer>
   );
 }

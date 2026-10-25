@@ -1,0 +1,885 @@
+/*
+ * Unsubscribality Easter egg. Choreography per phase is driven by [data-phase] on .root;
+ * base styles are each element's final state, so disabling animations (reduced motion)
+ * leaves a correct static frame.
+ */
+
+.dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f5f7ff;
+  overflow: hidden;
+}
+
+.dialog::backdrop {
+  background: transparent;
+}
+
+.root {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Stage ─────────────────────────────────────────────── */
+
+.stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 35%, #232c78 0%, #0b1030 48%, #03050d 100%);
+}
+
+.root[data-phase="activated"] .stage {
+  animation: stage-in 420ms 140ms ease-out both;
+}
+
+/* CRT scanlines over everything */
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 4px);
+}
+
+.floor {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 36%;
+  background-image:
+    linear-gradient(rgba(91, 92, 246, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 92, 246, 0.35) 1px, transparent 1px);
+  background-size: 48px 48px;
+  transform: perspective(320px) rotateX(58deg);
+  transform-origin: top;
+  mask-image: linear-gradient(to bottom, transparent, black 45%);
+}
+
+.horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 36%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #5b5cf6, #2fa8ff, #5b5cf6, transparent);
+  box-shadow: 0 0 24px 6px rgba(91, 92, 246, 0.55);
+}
+
+.spotlight {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(70vw, 720px);
+  height: 100%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 58%, rgba(47, 168, 255, 0.22), transparent 60%);
+  pointer-events: none;
+}
+
+.scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 5px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scanlineBlue {
+  background: #2fa8ff;
+  box-shadow: 0 0 18px 4px #2fa8ff;
+}
+
+.scanlineViolet {
+  background: #7c4dff;
+  box-shadow: 0 0 18px 4px #7c4dff;
+}
+
+.root[data-phase="activated"] .scanlineBlue {
+  animation: sweep 520ms ease-in both;
+}
+
+.root[data-phase="activated"] .scanlineViolet {
+  animation: sweep 520ms 110ms ease-in both;
+}
+
+/* Applied to the real page <main> behind the overlay while the cheat code kicks in. */
+.pageGlitch {
+  animation: page-glitch 420ms steps(2, end) both;
+}
+
+/* ── Arcade text ───────────────────────────────────────── */
+
+.unlock {
+  position: absolute;
+  top: 24%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.75rem 1rem;
+  border: 3px solid #7c4dff;
+  background: rgba(11, 16, 48, 0.85);
+  box-shadow: 0 0 0 3px #0b1030, 0 0 28px rgba(124, 77, 255, 0.6);
+  font-size: clamp(0.6rem, 1.6vw, 0.9rem);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: #c7d3f6;
+  display: none;
+}
+
+.root[data-phase="activated"] .unlock {
+  display: block;
+  animation: blink-in 520ms steps(4, end) both;
+}
+
+.finishIt {
+  position: absolute;
+  top: 14%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(2rem, 8vw, 6.5rem);
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 4px 4px 0 #5b5cf6, 8px 8px 0 #1a1f6e, 0 0 36px rgba(47, 168, 255, 0.85);
+  display: none;
+}
+
+.root[data-phase="finish-it"] .finishIt {
+  display: block;
+  animation: slam 320ms 80ms cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+/* ── HUD ───────────────────────────────────────────────── */
+
+.hud {
+  position: absolute;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(880px, 70vw);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: end;
+  font-size: clamp(0.45rem, 1vw, 0.65rem);
+  letter-spacing: 0.06em;
+}
+
+.root[data-phase="activated"] .hud {
+  opacity: 0;
+}
+
+/* Small screens: keep the HUD clear of the Sound/Close controls. */
+@media (max-width: 767px) {
+  .hud {
+    top: 4.25rem;
+    width: calc(100vw - 2rem);
+  }
+
+  .finishIt {
+    top: 22%;
+  }
+}
+
+.hudLabel {
+  margin-bottom: 0.4rem;
+  color: #c7d3f6;
+}
+
+.hudRight {
+  text-align: right;
+}
+
+.versus {
+  font-size: clamp(0.8rem, 1.6vw, 1.1rem);
+  color: #ff6b4f;
+  text-shadow: 0 0 12px rgba(255, 107, 79, 0.7);
+}
+
+.bar {
+  height: 14px;
+  border: 2px solid #c7d3f6;
+  background: #1a1f3d;
+  box-shadow: 0 0 0 2px #0b1030;
+}
+
+.barFill {
+  height: 100%;
+  background: linear-gradient(90deg, #2fa8ff, #5b5cf6);
+  transform-origin: left;
+}
+
+.enemyFill {
+  background: linear-gradient(90deg, #7c4dff, #ff4f2f);
+  transform-origin: right;
+  transform: scaleX(0);
+}
+
+.root[data-phase="finish-it"] .enemyFill {
+  transform: scaleX(1);
+}
+
+.root[data-phase="fatality"] .enemyFill {
+  animation: drain 360ms 450ms steps(6, end) both;
+}
+
+/* ── Fighter, striker, impact ─────────────────────────── */
+
+.shaker {
+  position: absolute;
+  inset: 0;
+}
+
+.root[data-phase="finish-it"] .shaker {
+  animation: shake 260ms 120ms linear both;
+}
+
+.root[data-phase="fatality"] .shaker {
+  animation: shake-hard 340ms 450ms linear both;
+}
+
+.anchor {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 0;
+  height: 0;
+}
+
+.fighter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(130px, 17vw, 210px);
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+.root[data-phase="finish-it"] .fighter,
+.root[data-phase="fatality"] .fighter {
+  display: block;
+}
+
+.fighterBody {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 22px rgba(47, 168, 255, 0.55));
+}
+
+.root[data-phase="finish-it"] .fighterBody {
+  animation:
+    enter 280ms ease-out both,
+    wobble 150ms 280ms ease-in-out infinite alternate;
+}
+
+.root[data-phase="fatality"] .fighterBody {
+  animation:
+    wobble 150ms ease-in-out 3 alternate,
+    hit-freeze 200ms 450ms steps(2, end) both,
+    vanish 1ms 660ms forwards;
+}
+
+.sweat {
+  position: absolute;
+  top: -6%;
+  right: -4%;
+  width: 14%;
+  aspect-ratio: 1 / 1.4;
+  background: #8fd3ff;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  opacity: 0;
+}
+
+.root[data-phase="finish-it"] .sweat {
+  animation: sweat 600ms 300ms ease-in both;
+}
+
+.striker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  transform: translate(-50%, -105%);
+}
+
+.root[data-phase="fatality"] .striker {
+  display: flex;
+  animation:
+    strike 450ms cubic-bezier(0.55, 0, 1, 0.45) both,
+    recoil 420ms 450ms ease-out forwards;
+}
+
+.strikeButton {
+  padding: 0.9rem 1.4rem;
+  border: 4px solid #0b1030;
+  background: linear-gradient(90deg, #5b3df5, #2f8bff);
+  box-shadow: 0 0 0 4px #c7d3f6, 0 0 40px rgba(91, 92, 246, 0.9);
+  font-size: clamp(0.65rem, 1.4vw, 1rem);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.strikeCursor {
+  width: clamp(36px, 4vw, 56px);
+  margin-left: -1.5rem;
+  margin-top: 2.2rem;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+}
+
+.shockwave {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 160px;
+  height: 160px;
+  margin: -80px 0 0 -80px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shockViolet {
+  border: 6px solid #7c4dff;
+  box-shadow: 0 0 30px #7c4dff, inset 0 0 30px #7c4dff;
+}
+
+.shockBlue {
+  border: 4px solid #2fa8ff;
+  box-shadow: 0 0 24px #2fa8ff;
+}
+
+.root[data-phase="fatality"] .shockViolet {
+  animation: shockwave 620ms 450ms ease-out both;
+}
+
+.root[data-phase="fatality"] .shockBlue {
+  animation: shockwave 700ms 540ms ease-out both;
+}
+
+.particles {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+}
+
+.root[data-phase="fatality"] .particles {
+  display: block;
+}
+
+.particle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--size);
+  height: var(--size);
+  background: var(--color);
+  box-shadow: 0 0 8px var(--color);
+  opacity: 0;
+}
+
+.root[data-phase="fatality"] .particle {
+  animation: explode 820ms calc(660ms + var(--delay)) cubic-bezier(0.2, 0.7, 0.4, 1) both;
+}
+
+/* ── Victory ───────────────────────────────────────────── */
+
+.victory {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  /* "safe" keeps the top reachable when the content is taller than the viewport. */
+  justify-content: safe center;
+  overflow-y: auto;
+  gap: 1rem;
+  padding: 5rem 1rem 2rem;
+  text-align: center;
+}
+
+.root[data-phase="victory"] .victory {
+  display: flex;
+}
+
+.victoryTitle {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.25rem, 5.6vw, 4.6rem);
+  line-height: 1.1;
+  background: linear-gradient(90deg, #7c4dff, #5b5cf6 45%, #2fa8ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(4px 4px 0 #0b1030) drop-shadow(0 0 24px rgba(91, 92, 246, 0.75));
+}
+
+.root[data-phase="victory"] .victoryTitle {
+  animation: slam 420ms cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+.victoryLine {
+  margin: 0;
+  font-size: clamp(0.6rem, 1.6vw, 1.05rem);
+  letter-spacing: 0.08em;
+  color: #e7edf8;
+}
+
+.root[data-phase="victory"] .victoryLine {
+  animation: rise 360ms var(--delay) ease-out both;
+}
+
+.flawless {
+  margin: 0.75rem 0 0;
+  font-size: clamp(0.55rem, 1.3vw, 0.85rem);
+  letter-spacing: 0.1em;
+  color: #ff6b4f;
+  text-shadow: 0 0 14px rgba(255, 107, 79, 0.7);
+}
+
+.root[data-phase="victory"] .flawless {
+  animation: blink-in 700ms 900ms steps(4, end) both;
+}
+
+.disclaimer,
+.actionButton,
+.controlButton {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.disclaimer {
+  margin: 1.25rem 0 0;
+  max-width: 28rem;
+  font-size: 0.85rem;
+  color: #a3afc2;
+}
+
+.root[data-phase="victory"] .disclaimer,
+.root[data-phase="victory"] .actions {
+  animation: rise 360ms 1100ms ease-out both;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.sparkle {
+  position: absolute;
+  bottom: -12px;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  background: var(--color);
+  box-shadow: 0 0 10px var(--color);
+  opacity: 0;
+}
+
+.root[data-phase="victory"] .sparkle {
+  animation: float-up 2600ms var(--delay) ease-out 2 both;
+}
+
+/* ── Controls ──────────────────────────────────────────── */
+
+.controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.controlButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(199, 211, 246, 0.35);
+  border-radius: 9999px;
+  background: rgba(11, 16, 48, 0.7);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e7edf8;
+}
+
+.controlButton:hover {
+  background: rgba(42, 61, 116, 0.8);
+}
+
+.controlButton:focus-visible,
+.actionButton:focus-visible {
+  outline: 2px solid #5f7ed5;
+  outline-offset: 2px;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(199, 211, 246, 0.35);
+  background: rgba(11, 16, 48, 0.7);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.actionPrimary {
+  border-color: transparent;
+  background: linear-gradient(90deg, #5b3df5, #2f8bff);
+  box-shadow: 0 12px 32px -12px #4f6dff;
+}
+
+.kbd {
+  padding: 0 0.3rem;
+  border: 1px solid rgba(199, 211, 246, 0.4);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  color: #a3afc2;
+}
+
+/* ── Hints on the page itself ──────────────────────────── */
+
+.codeHint {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.5rem 0;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  opacity: 0.55;
+  touch-action: manipulation;
+  transition: opacity 200ms ease, color 200ms ease;
+}
+
+.codeKeys {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+}
+
+.codeArrow {
+  width: 1em;
+  height: 1em;
+}
+
+.codeHint:hover,
+.codeHint:focus-visible {
+  opacity: 1;
+  color: var(--link);
+}
+
+.codeHint:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+.cornerPrompt {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 0.6rem 0.8rem;
+  border: 2px solid #5b5cf6;
+  background: rgba(11, 16, 48, 0.92);
+  box-shadow: 0 0 0 2px #0b1030, 0 0 20px rgba(91, 92, 246, 0.45);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  color: #c7d3f6;
+  text-align: left;
+  touch-action: manipulation;
+  animation: rise 400ms ease-out both;
+}
+
+.cornerPromptTitle {
+  animation: blink-in 1200ms steps(4, end) 2;
+}
+
+.cornerPromptCode {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: #2fa8ff;
+  transition: max-height 200ms ease, opacity 200ms ease, margin-top 200ms ease;
+}
+
+.cornerPrompt:hover .cornerPromptCode,
+.cornerPrompt:focus .cornerPromptCode {
+  max-height: 2em;
+  margin-top: 0.5rem;
+  opacity: 1;
+}
+
+.cornerPrompt:focus-visible {
+  outline: 2px solid #5f7ed5;
+  outline-offset: 2px;
+}
+
+/* ── Keyframes ─────────────────────────────────────────── */
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sweep {
+  0% {
+    opacity: 0.9;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 0.9;
+    transform: translateY(100dvh);
+  }
+}
+
+@keyframes page-glitch {
+  0% {
+    transform: translate(0, 0);
+    filter: none;
+  }
+  25% {
+    transform: translate(-6px, 2px) skewX(-2deg);
+    filter: hue-rotate(60deg) saturate(1.6);
+  }
+  50% {
+    transform: translate(5px, -2px);
+    filter: hue-rotate(-40deg) contrast(1.3);
+  }
+  75% {
+    transform: translate(-3px, 0) skewX(1deg);
+    filter: hue-rotate(20deg);
+  }
+  100% {
+    transform: translate(0, 0);
+    filter: none;
+  }
+}
+
+@keyframes blink-in {
+  0%,
+  50% {
+    opacity: 0;
+  }
+  25%,
+  75%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slam {
+  from {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-4px, 2px);
+  }
+  50% {
+    transform: translate(4px, -2px);
+  }
+  75% {
+    transform: translate(-2px, 1px);
+  }
+}
+
+@keyframes shake-hard {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-10px, 5px);
+  }
+  40% {
+    transform: translate(9px, -6px);
+  }
+  60% {
+    transform: translate(-6px, 3px);
+  }
+  80% {
+    transform: translate(4px, -2px);
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+}
+
+@keyframes wobble {
+  from {
+    transform: rotate(-4deg) translateX(-2px);
+  }
+  to {
+    transform: rotate(4deg) translateX(2px);
+  }
+}
+
+@keyframes hit-freeze {
+  from {
+    filter: brightness(3) saturate(0) drop-shadow(0 0 30px #ffffff);
+  }
+  to {
+    filter: brightness(1.4) drop-shadow(0 0 30px #7c4dff);
+  }
+}
+
+@keyframes vanish {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes sweat {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+@keyframes strike {
+  from {
+    transform: translate(-50%, calc(-105% - 100dvh)) rotate(-8deg);
+  }
+  to {
+    transform: translate(-50%, -105%) rotate(0deg);
+  }
+}
+
+@keyframes recoil {
+  0% {
+    transform: translate(-50%, -105%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -150%) scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes shockwave {
+  from {
+    opacity: 1;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 0;
+    transform: scale(4);
+  }
+}
+
+@keyframes drain {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  55% {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) + 240px)) rotate(calc(var(--rot) * 2));
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-70vh);
+  }
+}
+
+/* Reduced motion: no animation at all; the reducer already shows a static victory. */
+@media (prefers-reduced-motion: reduce) {
+  .dialog *,
+  .pageGlitch,
+  .cornerPrompt,
+  .cornerPromptTitle {
+    animation: none !important;
+  }
+
+  .codeHint,
+  .cornerPromptCode {
+    transition: none;
+  }
+}
+
+/* Short viewports (phone landscape, high zoom): tighter victory layout. */
+@media (max-height: 520px) {
+  .victory {
+    gap: 0.5rem;
+    padding-top: 3.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .disclaimer {
+    margin-top: 0.5rem;
+  }
+}

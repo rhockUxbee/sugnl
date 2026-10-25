@@ -20,7 +20,8 @@ function buildCsp(nonce: string, isDevelopment: boolean) {
     "frame-src 'self' https://www.google.com",
     "object-src 'none'",
     "base-uri 'self'",
-    "form-action 'self'",
+    // GitHub: admin sign-in redirects there after a form submission.
+    "form-action 'self' https://github.com",
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
   ];

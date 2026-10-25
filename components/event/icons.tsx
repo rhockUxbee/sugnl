@@ -119,3 +119,30 @@ export function CupIcon(props: IconProps) {
     </BaseIcon>
   );
 }
+
+export function DocumentIcon(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path d="M14 3H7.5A2.5 2.5 0 0 0 5 5.5v13A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V8l-5-5Z" />
+      <path d="M14 3v5h5M9 12.5h6M9 16.5h6" />
+    </BaseIcon>
+  );
+}
+
+export function MailIcon(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+    </BaseIcon>
+  );
+}
+
+export function ShieldCheckIcon(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6L12 3Z" />
+      <path d="m9 12 2.2 2.2L15.5 10" />
+    </BaseIcon>
+  );
+}
