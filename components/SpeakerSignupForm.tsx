@@ -76,6 +76,7 @@ export default function SpeakerSignupForm() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-sm text-[color:var(--muted)]">All fields are required unless marked optional.</p>
         <div className="hidden" aria-hidden="true">
           <label htmlFor="personal-website">Website</label>
           <input
@@ -97,7 +98,8 @@ export default function SpeakerSignupForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--focus-ring)]"
+            className="w-full rounded-md border border-[color:var(--input-border)] bg-[color:var(--surface)] px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus-ring)]"
+            autoComplete="name"
             placeholder="Your name"
           />
         </div>
@@ -112,7 +114,8 @@ export default function SpeakerSignupForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--focus-ring)]"
+            className="w-full rounded-md border border-[color:var(--input-border)] bg-[color:var(--surface)] px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus-ring)]"
+            autoComplete="email"
             placeholder="your.email@example.com"
           />
         </div>
@@ -126,7 +129,7 @@ export default function SpeakerSignupForm() {
             id="speaker-linkedin"
             value={linkedin}
             onChange={(e) => setLinkedin(e.target.value)}
-            className="w-full rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--focus-ring)]"
+            className="w-full rounded-md border border-[color:var(--input-border)] bg-[color:var(--surface)] px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus-ring)]"
             placeholder="https://www.linkedin.com/in/your-profile"
           />
         </div>
@@ -141,7 +144,7 @@ export default function SpeakerSignupForm() {
             value={sessionTitle}
             onChange={(e) => setSessionTitle(e.target.value)}
             required
-            className="w-full rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--focus-ring)]"
+            className="w-full rounded-md border border-[color:var(--input-border)] bg-[color:var(--surface)] px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus-ring)]"
             placeholder="Title of your talk"
           />
         </div>
@@ -156,7 +159,7 @@ export default function SpeakerSignupForm() {
             onChange={(e) => setSessionDescription(e.target.value)}
             required
             rows={5}
-            className="w-full rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--focus-ring)]"
+            className="w-full rounded-md border border-[color:var(--input-border)] bg-[color:var(--surface)] px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus-ring)]"
             placeholder="Briefly describe your session and audience takeaways"
           />
         </div>
@@ -170,17 +173,20 @@ export default function SpeakerSignupForm() {
         </button>
       </form>
 
-      {message && (
-        <div
-          className={`mt-4 rounded-md p-3 ${
-            message.type === "success"
-              ? "bg-[color:var(--success-bg)] text-[color:var(--success-ink)]"
-              : "bg-[color:var(--error-bg)] text-[color:var(--error-ink)]"
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
+      <div role="status">
+        {message && (
+          <div
+            role={message.type === "error" ? "alert" : undefined}
+            className={`mt-4 rounded-md p-3 ${
+              message.type === "success"
+                ? "bg-[color:var(--success-bg)] text-[color:var(--success-ink)]"
+                : "bg-[color:var(--error-bg)] text-[color:var(--error-ink)]"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

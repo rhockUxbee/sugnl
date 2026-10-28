@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode, useState, useSyncExternalStore } from "react";
+import { type ReactNode, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRightIcon, MailIcon } from "@/components/event/icons";
 import {
   cardClassName,
@@ -51,6 +51,14 @@ export default function NewsletterTokenConfirmation({
   const [status, setStatus] = useState<Status>("idle");
   const [errorText, setErrorText] = useState("");
   const isMissingToken = hash !== null && !token;
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+
+  // The confirm button unmounts on success; move focus so keyboard users keep their place.
+  useEffect(() => {
+    if (status === "done") {
+      successHeadingRef.current?.focus();
+    }
+  }, [status]);
 
   const handleConfirm = async () => {
     setStatus("submitting");
@@ -92,7 +100,9 @@ export default function NewsletterTokenConfirmation({
         <span className="pill mb-4 inline-block bg-[color:var(--success-bg)] text-[color:var(--success-ink)]">
           Done
         </span>
-        <h2 className={`${cardHeadingClassName} mb-2`}>{successHeading}</h2>
+        <h2 ref={successHeadingRef} tabIndex={-1} className={`${cardHeadingClassName} mb-2 focus:outline-none`}>
+          {successHeading}
+        </h2>
         <p className="mb-6 text-[color:var(--muted)]">{successText}</p>
         <div className="flex flex-wrap gap-3">
           <Link href="/events" className={primaryButtonClassName}>
@@ -145,7 +155,7 @@ export default function NewsletterTokenConfirmation({
       )}
 
       {status === "error" && (
-        <p role="status" className="mt-4 rounded-xl bg-[color:var(--error-bg)] p-4 text-sm text-[color:var(--error-ink)]">
+        <p role="alert" className="mt-4 rounded-xl bg-[color:var(--error-bg)] p-4 text-sm text-[color:var(--error-ink)]">
           {errorText}
         </p>
       )}

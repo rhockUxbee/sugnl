@@ -1,6 +1,11 @@
 import EventOverviewCard from "@/components/event/EventOverviewCard";
 import PageContainer from "@/components/PageContainer";
 import { getPastEvents, getUpcomingEvents } from "@/lib/events";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Events | SUGNL",
+};
 
 export default function EventsPage() {
   const upcomingEvents = getUpcomingEvents();

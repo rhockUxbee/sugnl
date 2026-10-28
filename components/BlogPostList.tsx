@@ -34,7 +34,7 @@ export function BlogPostList({ posts, selectedSourceIds }: BlogPostListProps) {
 
   if (filteredPosts.length === 0) {
     return (
-      <p className="py-12 text-center text-[color:var(--muted)]">
+      <p role="status" className="py-12 text-center text-[color:var(--muted)]">
         No blog posts available for the selected sources.
       </p>
     );
@@ -42,6 +42,9 @@ export function BlogPostList({ posts, selectedSourceIds }: BlogPostListProps) {
 
   return (
     <div className="space-y-4">
+      <p role="status" className="sr-only">
+        {filteredPosts.length} posts shown, page {currentPage} of {totalPages}.
+      </p>
       {pagePosts.map((post) => (
         <article
           key={post.id}
@@ -69,7 +72,7 @@ export function BlogPostList({ posts, selectedSourceIds }: BlogPostListProps) {
             rel="noopener noreferrer"
             className="text-sm font-semibold text-[color:var(--link)] hover:underline"
           >
-            Read post
+            Read post<span className="sr-only">: {post.title}</span>
           </a>
         </article>
       ))}

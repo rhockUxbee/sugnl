@@ -55,8 +55,8 @@ export default function RegisterNowSection({
 
       {hasRegistrationUrl ? (
         <p>
-          <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--accent)]">
-            <span className="font-semibold text-[color:var(--accent)]">Sign up now</span>
+          <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--link)] underline underline-offset-2 hover:no-underline">
+            Sign up now
           </a>
         </p>
       ) : (

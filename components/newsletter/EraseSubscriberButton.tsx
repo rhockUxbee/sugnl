@@ -19,6 +19,7 @@ export default function EraseSubscriberButton({ email }: EraseSubscriberButtonPr
       <input type="hidden" name="email" value={email} />
       <button
         type="submit"
+        aria-label={`Erase ${email}`}
         className="rounded-md px-3 py-1 text-sm text-[color:var(--error-ink)] underline-offset-4 hover:underline"
       >
         Erase

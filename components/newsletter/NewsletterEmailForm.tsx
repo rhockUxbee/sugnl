@@ -16,7 +16,7 @@ interface NewsletterEmailFormProps {
 }
 
 const inputClassName =
-  "w-full rounded-xl border border-[color:var(--line)] bg-[color:var(--surface-soft)] px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[color:var(--focus-ring)]";
+  "w-full rounded-xl border border-[color:var(--input-border)] bg-[color:var(--surface-soft)] px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus-ring)]";
 
 export default function NewsletterEmailForm({
   endpoint,
@@ -77,6 +77,7 @@ export default function NewsletterEmailForm({
   return (
     <div>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-sm text-[color:var(--muted)]">All fields are required.</p>
         <div className="hidden" aria-hidden="true">
           <label htmlFor="newsletter-website">Website</label>
           <input
@@ -136,18 +137,20 @@ export default function NewsletterEmailForm({
           <ArrowRightIcon className={variant === "showcase" ? "h-5 w-5" : "h-4 w-4"} />
         </button>
       </form>
-      {message && (
-        <div
-          role="status"
-          className={`mt-4 rounded-xl p-4 text-sm ${
-            message.type === "success"
-              ? "bg-[color:var(--success-bg)] text-[color:var(--success-ink)]"
-              : "bg-[color:var(--error-bg)] text-[color:var(--error-ink)]"
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
+      <div role="status">
+        {message && (
+          <div
+            role={message.type === "error" ? "alert" : undefined}
+            className={`mt-4 rounded-xl p-4 text-sm ${
+              message.type === "success"
+                ? "bg-[color:var(--success-bg)] text-[color:var(--success-ink)]"
+                : "bg-[color:var(--error-bg)] text-[color:var(--error-ink)]"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
