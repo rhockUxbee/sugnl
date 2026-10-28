@@ -88,7 +88,7 @@ export default function SiteHeader() {
               src="/sugnl-logo.png"
               alt="SUGNL Logo"
               width={200}
-              height={32}
+              height={18}
               priority
               className="h-auto w-[200px] max-w-[200px] object-contain sm:max-w-xs md:max-w-none"
             />
