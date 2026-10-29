@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   email TEXT PRIMARY KEY,
   consented_at TIMESTAMPTZ NOT NULL,
   confirmed_at TIMESTAMPTZ NOT NULL,
-  -- Throttles "you're already subscribed" emails.
+  -- Throttles "you're already subscribed" and "confirm unsubscribe" emails.
   last_notified_at TIMESTAMPTZ
 );
 

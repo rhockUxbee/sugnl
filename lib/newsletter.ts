@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { getSql } from "@/lib/db";
+import { createUnsubscribeToken, verifyUnsubscribeToken } from "@/lib/unsubscribeToken";
 
 // Domain rules: see GLOSSARY.md (Newsletter section).
 const PENDING_SUBSCRIPTION_TTL = "7 days";
@@ -14,7 +15,8 @@ export interface Subscriber {
 /** An email the website must send as the outcome of a request. */
 export type NewsletterEmail =
   | { kind: "confirm-subscription"; email: string; token: string }
-  | { kind: "already-subscribed"; email: string };
+  | { kind: "already-subscribed"; email: string }
+  | { kind: "confirm-unsubscribe"; email: string };
 
 export function normalizeEmail(value: unknown): string | null {
   if (typeof value !== "string") {
@@ -123,6 +125,49 @@ export async function countPendingSubscriptions(): Promise<number> {
   `;
 
   return Number(row?.count ?? 0);
+}
+
+function getUnsubscribeSecret(): string {
+  const secret = process.env.NEWSLETTER_UNSUBSCRIBE_SECRET;
+  if (!secret) {
+    throw new Error("NEWSLETTER_UNSUBSCRIBE_SECRET is not set.");
+  }
+
+  return secret;
+}
+
+/** The token for this address's personal unsubscribe link. */
+export function getUnsubscribeToken(email: string): string {
+  return createUnsubscribeToken(email, getUnsubscribeSecret());
+}
+
+/**
+ * Records a request to unsubscribe from the unsubscribe page. Returns the email with the
+ * personal unsubscribe link, or null for an unknown or too recently notified address.
+ */
+export async function requestUnsubscribe(email: string): Promise<NewsletterEmail | null> {
+  const sql = getSql();
+
+  const notified = await sql`
+    UPDATE newsletter_subscribers
+    SET last_notified_at = now()
+    WHERE email = ${email}
+      AND (last_notified_at IS NULL OR last_notified_at < now() - ${EMAIL_THROTTLE}::interval)
+    RETURNING email
+  `;
+
+  return notified.length > 0 ? { kind: "confirm-unsubscribe", email } : null;
+}
+
+/** Erases the address a personal unsubscribe link was issued for. */
+export async function unsubscribeWithToken(token: string): Promise<boolean> {
+  const email = verifyUnsubscribeToken(token, getUnsubscribeSecret());
+  if (!email) {
+    return false;
+  }
+
+  await eraseSubscriber(email);
+  return true;
 }
 
 /** Erases every record of an email address (GDPR right to erasure). */

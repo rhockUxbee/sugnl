@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getEventById } from "@/lib/events";
+import { isEventPast } from "@/lib/eventDate";
 
 // In a production app, you'd store RSVPs in a database
 // For now, we'll just validate and log them
@@ -104,7 +105,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if event is in the past
-    if (event.isPast) {
+    if (isEventPast(event.date)) {
       return NextResponse.json(
         { error: "Cannot RSVP to past events" },
         { status: 400 }

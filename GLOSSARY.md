@@ -21,7 +21,7 @@ The act of the email address owner proving they asked to subscribe, by following
 _Avoid_: Verification, activation
 
 **Unsubscribe**:
-A Subscriber ending their subscription by entering their email address on the unsubscribe page; it takes effect immediately. Afterwards the website keeps no record of them.
+A Subscriber ending their subscription through the personal unsubscribe link in any email the website sends them. Entering an email address on the unsubscribe page only emails that link, so nobody can unsubscribe someone else. It takes effect immediately; afterwards the website keeps no record of them.
 _Avoid_: Sign off, opt out, remove
 
 **Subscriber Export**:

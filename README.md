@@ -133,7 +133,6 @@ Example event JSON:
       startTime: "19:40",
     },
   ],
-  isPast: false,
 }
 ```
 

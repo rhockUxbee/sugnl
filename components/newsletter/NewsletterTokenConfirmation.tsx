@@ -13,7 +13,7 @@ import Confetti from "@/components/newsletter/Confetti";
 import { gradientButtonClassName, iconBadgeClassName } from "@/components/newsletter/styles";
 
 interface NewsletterTokenConfirmationProps {
-  readonly endpoint: "/api/newsletter/confirm";
+  readonly endpoint: "/api/newsletter/confirm" | "/api/newsletter/unsubscribe/confirm";
   readonly heading: string;
   readonly text: string;
   readonly buttonLabel: string;
@@ -21,6 +21,8 @@ interface NewsletterTokenConfirmationProps {
   readonly successText: string;
   /** "card" renders its own card; "showcase" renders bare content for NewsletterShowcase. */
   readonly variant?: "card" | "showcase";
+  /** Shown instead when the URL carries no token, rather than the "link is incomplete" message. */
+  readonly fallback?: ReactNode;
 }
 
 type Status = "idle" | "submitting" | "done" | "error";
@@ -45,6 +47,7 @@ export default function NewsletterTokenConfirmation({
   successHeading,
   successText,
   variant = "card",
+  fallback,
 }: NewsletterTokenConfirmationProps) {
   const hash = useSyncExternalStore(subscribeToHash, getHash, getServerHash);
   const token = hash === null ? null : new URLSearchParams(hash.slice(1)).get("token");
@@ -59,6 +62,11 @@ export default function NewsletterTokenConfirmation({
       successHeadingRef.current?.focus();
     }
   }, [status]);
+
+  // Also during server rendering, so a plain visit doesn't flash the confirm button.
+  if (fallback && !token && status !== "done") {
+    return fallback;
+  }
 
   const handleConfirm = async () => {
     setStatus("submitting");
@@ -96,7 +104,7 @@ export default function NewsletterTokenConfirmation({
     return (
       wrap(
         <>
-        <Confetti />
+        {endpoint === "/api/newsletter/confirm" && <Confetti />}
         <span className="pill mb-4 inline-block bg-[color:var(--success-bg)] text-[color:var(--success-ink)]">
           Done
         </span>
