@@ -1,6 +1,7 @@
 import MarkdownContent from "@/components/MarkdownContent";
 import { CalendarIcon, PinIcon } from "@/components/event/icons";
 import { parseLocation } from "@/lib/events";
+import { isEventPast } from "@/lib/eventDate";
 import { Event } from "@/types";
 
 type EventHeroProps = {
@@ -34,7 +35,7 @@ export default function EventHero({ event, intro }: EventHeroProps) {
           >
             {event.title}
           </h1>
-          {event.isPast ? (
+          {isEventPast(event.date) ? (
             <span className="pill bg-[color:var(--pill-past-bg)] text-[color:var(--pill-past-ink)]">Past event</span>
           ) : (
             <span className="pill bg-[color:var(--pill-upcoming-bg)] text-[color:var(--accent-ink)]">Upcoming</span>

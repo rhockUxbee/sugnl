@@ -10,6 +10,9 @@ import EventAgenda from "@/components/event/EventAgenda";
 import EventLocationCard from "@/components/event/EventLocationCard";
 import { ArrowLeftIcon } from "@/components/event/icons";
 
+// Re-render hourly so events move to "past" without a redeploy.
+export const revalidate = 3600;
+
 interface PageProps {
   readonly params: Promise<{
     id: string;

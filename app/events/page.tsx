@@ -3,6 +3,9 @@ import PageContainer from "@/components/PageContainer";
 import { getPastEvents, getUpcomingEvents } from "@/lib/events";
 import type { Metadata } from "next";
 
+// Re-render hourly so events move to "past" without a redeploy.
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Events | SUGNL",
 };

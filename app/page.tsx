@@ -6,6 +6,9 @@ import PageContainer from "@/components/PageContainer";
 import UpcomingEventCard from "@/components/UpcomingEventCard";
 import { featureFlags } from "@/lib/featureFlags";
 
+// Re-render hourly so events move to "past" without a redeploy.
+export const revalidate = 3600;
+
 export default async function Home() {
   const communityPosts = await getLatestBlogPosts(3);
   const nextEvent = getUpcomingEvents()[0];

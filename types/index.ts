@@ -33,7 +33,6 @@ export interface Event {
   summary?: string;
   description: string;
   activities: Activity[];
-  isPast: boolean;
 }
 
 export interface RSVP {

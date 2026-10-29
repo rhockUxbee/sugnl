@@ -3,6 +3,7 @@ import RegisterNowButton from "@/components/RegisterNowButton";
 import AddToCalendar from "@/components/event/AddToCalendar";
 import { ArrowRightIcon } from "@/components/event/icons";
 import { cardClassName, cardHeadingClassName, primaryButtonClassName } from "@/components/event/styles";
+import { isEventPast } from "@/lib/eventDate";
 import { Event } from "@/types";
 
 type EventRegisterCardProps = {
@@ -10,7 +11,7 @@ type EventRegisterCardProps = {
 };
 
 export default function EventRegisterCard({ event }: EventRegisterCardProps) {
-  if (event.isPast) {
+  if (isEventPast(event.date)) {
     return (
       <aside aria-labelledby="register-heading" className={cardClassName}>
         <h2 id="register-heading" className={`${cardHeadingClassName} mb-3`}>

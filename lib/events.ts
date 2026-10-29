@@ -1,4 +1,5 @@
 import { Event } from "@/types";
+import { isEventPast } from "@/lib/eventDate";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
@@ -58,8 +59,7 @@ function isValidEvent(value: unknown): value is Event {
     typeof event.description === "string" &&
     Array.isArray(event.activities) &&
     event.activities.length >= 1 &&
-    event.activities.every(isValidActivity) &&
-    typeof event.isPast === "boolean"
+    event.activities.every(isValidActivity)
   );
 }
 
@@ -87,13 +87,13 @@ export const events: Event[] = loadEventsFromFiles();
 
 export function getUpcomingEvents(): Event[] {
   return events
-    .filter((event) => !event.isPast)
+    .filter((event) => !isEventPast(event.date))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 
 export function getPastEvents(): Event[] {
   return events
-    .filter((event) => event.isPast)
+    .filter((event) => isEventPast(event.date))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
