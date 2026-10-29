@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { eraseSubscriber, normalizeEmail } from "@/lib/newsletter";
+import { normalizeEmail, requestUnsubscribe } from "@/lib/newsletter";
+import { sendNewsletterEmailAfterResponse } from "@/lib/newsletterMailer";
 import { featureFlags } from "@/lib/featureFlags";
 import {
   createRateLimiter,
@@ -14,7 +15,7 @@ const MIN_FORM_FILL_MS = 2000;
 // Same response whatever the address's state, so the form never reveals who is subscribed.
 const NEUTRAL_RESPONSE = {
   success: true,
-  message: "You're unsubscribed. If this address was on our list, it has been erased.",
+  message: "Check your inbox. If this address is on our list, we've sent it a link to confirm unsubscribing.",
 };
 
 export async function POST(request: NextRequest) {
@@ -48,8 +49,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
     }
 
-    // No email round-trip: withdrawing consent must be as easy as giving it (GDPR art. 7(3)).
-    await eraseSubscriber(normalizedEmail);
+    // Confirmed by email, so nobody can unsubscribe someone else's address. Subscribing takes the same
+    // round-trip, so withdrawing consent stays as easy as giving it (GDPR art. 7(3)).
+    const outgoing = await requestUnsubscribe(normalizedEmail);
+    if (outgoing) {
+      sendNewsletterEmailAfterResponse(outgoing);
+    }
 
     return NextResponse.json(NEUTRAL_RESPONSE, { status: 200 });
   } catch (error) {

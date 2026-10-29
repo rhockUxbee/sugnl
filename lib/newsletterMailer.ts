@@ -1,7 +1,7 @@
 import path from "node:path";
 import { after } from "next/server";
 import nodemailer, { type Transporter } from "nodemailer";
-import type { NewsletterEmail } from "@/lib/newsletter";
+import { getUnsubscribeToken, type NewsletterEmail } from "@/lib/newsletter";
 import { siteUrl } from "@/lib/siteUrl";
 
 // Transactional email only; Newsletters are never sent from the website.
@@ -46,7 +46,7 @@ interface Content {
   note: string;
 }
 
-function compose(email: NewsletterEmail): Content {
+function compose(email: NewsletterEmail, unsubscribeUrl: string): Content {
   switch (email.kind) {
     case "confirm-subscription":
       return {
@@ -62,6 +62,14 @@ function compose(email: NewsletterEmail): Content {
         heading: "You're already subscribed",
         body: "Someone (hopefully you) tried to subscribe this address to the SUGNL newsletter, but it is already subscribed. No action is needed.",
         note: "Didn't ask for this? You can safely ignore this email.",
+      };
+    case "confirm-unsubscribe":
+      return {
+        subject: "Confirm unsubscribing from the SUGNL newsletter",
+        heading: "Confirm unsubscribing",
+        body: "Someone (hopefully you) asked to unsubscribe this address from the SUGNL newsletter. Use the button below to confirm, and we erase your address right away.",
+        button: { label: "Unsubscribe", url: unsubscribeUrl },
+        note: "Didn't ask for this? Ignore this email and you stay subscribed.",
       };
   }
 }
@@ -126,8 +134,9 @@ ${buttonHtml}
 
 export async function sendNewsletterEmail(email: NewsletterEmail): Promise<void> {
   const from = process.env.SMTP_FROM ?? process.env.SMTP_USER;
-  const content = compose(email);
-  const unsubscribeUrl = link("/newsletter/unsubscribe");
+  // Personal link: unsubscribes without another email round-trip. Also cancels a Pending Subscription.
+  const unsubscribeUrl = link("/newsletter/unsubscribe", getUnsubscribeToken(email.email));
+  const content = compose(email, unsubscribeUrl);
 
   await getTransporter().sendMail({
     from,
