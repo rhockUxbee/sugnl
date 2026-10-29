@@ -41,8 +41,14 @@ export default async function RootLayout({
         className={`${bodyFont.variable} ${headingFont.variable} antialiased`}
         suppressHydrationWarning
       >
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[color:var(--button-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[color:var(--focus-ring)]"
+        >
+          Skip to main content
+        </a>
         <SiteHeader />
-        <main className="min-h-screen">{children}</main>
+        <main id="main" className="min-h-screen">{children}</main>
         <SpeedInsights />
         <Analytics />
         <CookieConsentBanner />

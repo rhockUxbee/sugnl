@@ -39,7 +39,7 @@ export default function AddToCalendar({ event, variant = "button", align = "left
             <a
               href={option.href}
               {...(option.external ? { target: "_blank", rel: "noopener noreferrer" } : { download: true })}
-              className="block px-4 py-2.5 text-sm text-[color:var(--ink)] transition-colors hover:bg-[color:var(--surface-muted)] focus-visible:bg-[color:var(--surface-muted)] focus-visible:outline-none"
+              className="block px-4 py-2.5 text-sm text-[color:var(--ink)] transition-colors hover:bg-[color:var(--surface-muted)] focus-visible:bg-[color:var(--surface-muted)] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[color:var(--focus-ring)]"
             >
               {option.label}
             </a>

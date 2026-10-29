@@ -88,7 +88,7 @@ export default function SiteHeader() {
               src="/sugnl-logo.png"
               alt="SUGNL Logo"
               width={200}
-              height={32}
+              height={18}
               priority
               className="h-auto w-[200px] max-w-[200px] object-contain sm:max-w-xs md:max-w-none"
             />
@@ -100,7 +100,8 @@ export default function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={getLinkClasses(item.href)}
+                  aria-current={pathname === item.href ? "page" : undefined}
+                          className={getLinkClasses(item.href)}
                 >
                   {item.label}
                 </Link>
@@ -136,6 +137,7 @@ export default function SiteHeader() {
                           key={item.href}
                           href={item.href}
                           onClick={closeDesktopMoreMenu}
+                          aria-current={pathname === item.href ? "page" : undefined}
                           className={getLinkClasses(item.href)}
                         >
                           {item.label}
@@ -191,7 +193,8 @@ export default function SiteHeader() {
                       key={item.href}
                       href={item.href}
                       onClick={closeMobileMenu}
-                      className={getLinkClasses(item.href)}
+                      aria-current={pathname === item.href ? "page" : undefined}
+                          className={getLinkClasses(item.href)}
                     >
                       {item.label}
                     </Link>

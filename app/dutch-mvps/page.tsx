@@ -2,6 +2,11 @@ import Link from "next/link";
 import { getDutchMvpDirectoryUrl, getDutchMvpsForYear } from "@/lib/sitecoreMvps";
 import PageIntro from "@/components/PageIntro";
 import PageContainer from "@/components/PageContainer";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dutch Sitecore MVPs | SUGNL",
+};
 
 interface PageProps {
   readonly searchParams: Promise<{
@@ -50,6 +55,7 @@ export default async function DutchMvpsPage({ searchParams }: PageProps) {
     <Link
       key={availableYear}
       href={`/dutch-mvps?year=${availableYear}`}
+      aria-current={availableYear === year ? "page" : undefined}
       className={`pill border border-[color:var(--line)] ${
         availableYear === year
           ? "bg-[color:var(--pill-upcoming-bg)] text-[color:var(--accent-ink)]"
@@ -116,7 +122,7 @@ export default async function DutchMvpsPage({ searchParams }: PageProps) {
             >
               <img
                 src={mvp.photoUrl}
-                alt={mvp.name}
+                alt=""
                 loading="lazy"
                 decoding="async"
                 className="mb-4 h-24 w-24 rounded-full object-cover"

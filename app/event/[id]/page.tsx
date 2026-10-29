@@ -1,4 +1,5 @@
 import { getAllEventIds, getEventAgenda, getEventById } from "@/lib/events";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageContainer from "@/components/PageContainer";
@@ -68,6 +69,13 @@ export default async function EventPage({ params }: PageProps) {
       </div>
     </PageContainer>
   );
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const event = getEventById(id);
+
+  return { title: event ? `${event.title} | SUGNL` : "Event | SUGNL" };
 }
 
 export function generateStaticParams() {

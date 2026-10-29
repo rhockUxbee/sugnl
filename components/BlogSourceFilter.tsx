@@ -52,16 +52,18 @@ export function BlogSourceFilter({
 
   return (
     <div className="mb-6 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface-soft)] p-4">
-      <h3 className="mb-3 text-sm font-semibold tracking-wide text-[color:var(--muted)]">
+      <h2 className="mb-3 text-sm font-semibold tracking-wide text-[color:var(--muted)]">
         Filter by Source
-      </h3>
+      </h2>
       <div className="flex flex-wrap gap-2">
         <button
+          type="button"
+          aria-pressed={areAllSourcesSelected}
           onClick={handleSelectAll}
-          className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+          className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
             areAllSourcesSelected
-              ? "bg-[color:var(--accent)] text-[color:var(--surface)]"
-              : "border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] hover:bg-[color:var(--surface-soft)]"
+              ? "border-[color:var(--accent)] bg-[color:var(--pill-upcoming-bg)] font-semibold text-[color:var(--accent-ink)]"
+              : "border-[color:var(--input-border)] bg-[color:var(--surface)] text-[color:var(--muted)] hover:bg-[color:var(--surface-soft)]"
           }`}
         >
           All sources ({posts.length})
@@ -74,11 +76,13 @@ export function BlogSourceFilter({
           return (
             <button
               key={source.id}
+              type="button"
+              aria-pressed={isSelected}
               onClick={() => handleSelectSource(source.id)}
-              className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
                 isSelected
-                  ? "bg-[color:var(--accent)] text-[color:var(--surface)]"
-                  : "border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] hover:bg-[color:var(--surface-soft)]"
+                  ? "border-[color:var(--accent)] bg-[color:var(--pill-upcoming-bg)] font-semibold text-[color:var(--accent-ink)]"
+                  : "border-[color:var(--input-border)] bg-[color:var(--surface)] text-[color:var(--muted)] hover:bg-[color:var(--surface-soft)]"
               }`}
             >
               {source.name}

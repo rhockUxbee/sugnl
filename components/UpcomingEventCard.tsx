@@ -38,6 +38,7 @@ export default function UpcomingEventCard({ event }: UpcomingEventCardProps) {
           alt=""
           fill
           sizes="50vw"
+          loading="eager"
           className="object-cover object-[75%_center] opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--surface)] via-[color:var(--surface)]/60 to-transparent" />

@@ -2,6 +2,11 @@ import Link from "next/link";
 import SpeakerSignupForm from "@/components/SpeakerSignupForm";
 import PageIntro from "@/components/PageIntro";
 import PageContainer from "@/components/PageContainer";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Become a Speaker | SUGNL",
+};
 
 export default function BecomeSpeakerPage() {
   return (
